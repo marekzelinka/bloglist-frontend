@@ -20,13 +20,13 @@ export function BlogForm({ onSubmit }) {
       }}
     >
       <div>
-        title <input type="text" name="title" />
+        title <input type="text" name="title" aria-label="title" />
       </div>
       <div>
-        author <input type="text" name="author" />
+        author <input type="text" name="author" aria-label="author" />
       </div>
       <div>
-        url <input type="url" name="url" />
+        url <input type="url" name="url" aria-label="url" />
       </div>
       <button type="submit">create</button>
     </form>
