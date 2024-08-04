@@ -1,9 +1,8 @@
-import axios from 'axios'
-const baseUrl = '/api/blogs'
+import axios from "axios";
 
-const getAll = () => {
-  const request = axios.get(baseUrl)
-  return request.then(response => response.data)
-}
+const BASE_URL = "/api/blogs";
 
-export default { getAll }
+export const getAllBlogs = async () => {
+  const response = await axios.get(BASE_URL);
+  return response.data;
+};
