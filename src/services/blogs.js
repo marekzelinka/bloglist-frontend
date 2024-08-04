@@ -31,3 +31,14 @@ export async function updateBlog(id, blogObject) {
 
   return response.data
 }
+
+export async function deleteBlog(id) {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+  const response = await axios.delete(`${BASE_URL}/${id}`, config)
+
+  return response.data
+}

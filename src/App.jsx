@@ -5,6 +5,7 @@ import { BlogForm } from './components/BlogForm.jsx'
 import { Togglable } from './components/Togglable.jsx'
 import {
   createBlog,
+  deleteBlog,
   getAllBlogs,
   setToken,
   updateBlog,
@@ -32,6 +33,7 @@ function App() {
       return null
     }
   })
+  console.log(user)
   const [blogs, setBlogs] = useState([])
   const sortedBlogs = [...blogs].sort(
     (blogA, blogB) => blogB.likes - blogA.likes,
@@ -87,8 +89,29 @@ function App() {
   const handleUpdateBlog = async (id, updates) => {
     const updatedBlog = await updateBlog(id, updates)
     setBlogs((blogs) =>
-      blogs.map((blog) => (blog.id === id ? updatedBlog : blog)),
+      blogs.map((blog) =>
+        blog.id === id ? { ...blog, likes: updatedBlog.likes } : blog,
+      ),
     )
+  }
+
+  const handleDeleteBlog = async (id) => {
+    const blog = blogs.find((blog) => blog.id === id)
+
+    try {
+      await deleteBlog(id)
+      notify({
+        message: `Deleted blog "${blog.title}" by "${blog.author}"`,
+        status: 'success',
+      })
+    } catch {
+      notify({
+        message: `Blog "${blog.title}" by "${blog.author}" was already removed from the server`,
+        status: 'error',
+      })
+    } finally {
+      setBlogs((blogs) => blogs.filter((blog) => blog.id !== id))
+    }
   }
 
   return user ? (
@@ -106,7 +129,13 @@ function App() {
         <BlogForm onSubmit={handleAddBlog} />
       </Togglable>
       {sortedBlogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} onUpdate={handleUpdateBlog} />
+        <Blog
+          key={blog.id}
+          blog={blog}
+          canDelete={blog.user?.username === user.username}
+          onUpdate={handleUpdateBlog}
+          onDelete={handleDeleteBlog}
+        />
       ))}
     </>
   ) : (

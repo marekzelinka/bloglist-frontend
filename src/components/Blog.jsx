@@ -1,11 +1,21 @@
 import { useState } from 'react'
 
-export function Blog({ blog, onUpdate }) {
+export function Blog({ blog, canDelete, onUpdate, onDelete }) {
   const [expanded, setExpanded] = useState(false)
   const toggleExpanded = () => setExpanded((expanded) => !expanded)
 
   const handleLike = async () => {
     onUpdate(blog.id, { likes: blog.likes + 1 })
+  }
+
+  const handleDelete = async () => {
+    const shouldDelete = window.confirm('Are you sure to delete this record.')
+
+    if (!shouldDelete) {
+      return
+    }
+
+    onDelete(blog.id)
   }
 
   return (
@@ -34,6 +44,11 @@ export function Blog({ blog, onUpdate }) {
             </button>
           </div>
           <div>{blog.author}</div>
+          {canDelete ? (
+            <button type="button" onClick={handleDelete}>
+              delete
+            </button>
+          ) : null}
         </div>
       ) : null}
     </div>
