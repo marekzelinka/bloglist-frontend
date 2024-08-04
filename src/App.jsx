@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { AlertBox } from './components/AlertBox.jsx'
 import { Blog } from './components/Blog.jsx'
+import { BlogForm } from './components/BlogForm.jsx'
 import { Togglable } from './components/Togglable.jsx'
 import { createBlog, getAllBlogs, setToken } from './services/blogs.js'
 import { login } from './services/login.js'
@@ -51,17 +52,9 @@ function App() {
       </p>
       <Togglable openButtonLabel="new note">
         <h2>Create new</h2>
-        <form
-          onSubmit={async (event) => {
-            event.preventDefault()
-
-            const form = event.target
-            const formData = new FormData(form)
-
+        <BlogForm
+          onSubmit={async ({ title, author, url }) => {
             try {
-              const title = formData.get('title')?.toString()
-              const author = formData.get('author')?.toString()
-              const url = formData.get('url')?.toString()
               const blog = await createBlog({ title, author, url })
               setBlogs((blogs) => blogs.concat(blog))
               notify({
@@ -69,23 +62,14 @@ function App() {
                 status: 'success',
               })
 
-              form.reset()
+              return { success: true }
             } catch (error) {
               notify({ message: error.response.data.error, status: 'error' })
+
+              return { success: false }
             }
           }}
-        >
-          <div>
-            title <input type="text" name="title" />
-          </div>
-          <div>
-            author <input type="text" name="author" />
-          </div>
-          <div>
-            url <input type="url" name="url" />
-          </div>
-          <button type="submit">create</button>
-        </form>
+        />
       </Togglable>
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
