@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types'
+
 export function BlogForm({ onSubmit }) {
   return (
     <form
@@ -29,4 +31,7 @@ export function BlogForm({ onSubmit }) {
       <button type="submit">create</button>
     </form>
   )
+}
+BlogForm.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
 }

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import { useState } from 'react'
 
 export function Blog({ blog, canDelete, onUpdate, onDelete }) {
@@ -53,4 +54,10 @@ export function Blog({ blog, canDelete, onUpdate, onDelete }) {
       ) : null}
     </div>
   )
+}
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  canDelete: PropTypes.bool.isRequired,
+  onUpdate: PropTypes.fund.isRequired,
+  onDelete: PropTypes.fund.isRequired,
 }
