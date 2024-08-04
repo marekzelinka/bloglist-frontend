@@ -2,8 +2,15 @@ import { useEffect, useState } from "react";
 import { Blog } from "./components/Blog.jsx";
 import { createBlog, getAllBlogs, setToken } from "./services/blogs.js";
 import { login } from "./services/login.js";
+import { AlertBox } from "./components/AlertBox.jsx";
 
 function App() {
+  const [alert, setAlert] = useState(null);
+  const notify = (alert, timeoutMs = 5000) => {
+    setAlert(alert);
+    window.setTimeout(() => setAlert(null), timeoutMs);
+  };
+
   const [user, setUser] = useState(() => {
     try {
       const rawUser = localStorage.getItem("user");
@@ -27,6 +34,7 @@ function App() {
   return user ? (
     <>
       <h1>blogs</h1>
+      <AlertBox alert={alert} />
       <p>
         {user.name ?? user.username} logged in{" "}
         <button
@@ -54,9 +62,15 @@ function App() {
             const url = formData.get("url")?.toString();
             const blog = await createBlog({ title, author, url });
             setBlogs((blogs) => blogs.concat(blog));
+            notify({
+              message: `A new blog "${blog.title}" by "${blog.author}" added`,
+              status: "success",
+            });
 
             form.reset();
-          } catch {}
+          } catch (error) {
+            notify({ message: error.response.data.error, status: "error" });
+          }
         }}
       >
         <div>
@@ -66,7 +80,7 @@ function App() {
           author <input type="text" name="author" />
         </div>
         <div>
-          url <input type="text" name="url" />
+          url <input type="url" name="url" />
         </div>
         <button type="submit">create</button>
       </form>
@@ -77,6 +91,7 @@ function App() {
   ) : (
     <>
       <h1>Log in to application</h1>
+      <AlertBox alert={alert} />
       <form
         onSubmit={async (event) => {
           event.preventDefault();
@@ -84,14 +99,18 @@ function App() {
           const form = event.target;
           const formData = new FormData(form);
 
-          const username = formData.get("username")?.toString();
-          const password = formData.get("password")?.toString();
-          const user = await login({ username, password });
-          setUser(user);
-          setToken(user.token);
-          localStorage.setItem("user", JSON.stringify(user));
-
-          form.reset();
+          try {
+            const username = formData.get("username")?.toString();
+            const password = formData.get("password")?.toString();
+            const user = await login({ username, password });
+            setUser(user);
+            setToken(user.token);
+            localStorage.setItem("user", JSON.stringify(user));
+            form.reset();
+            notify({ message: "Successfully logged in", status: "success" });
+          } catch (error) {
+            notify({ message: error.response.data.error, status: "error" });
+          }
         }}
       >
         <div>
