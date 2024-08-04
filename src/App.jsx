@@ -33,6 +33,9 @@ function App() {
     }
   })
   const [blogs, setBlogs] = useState([])
+  const sortedBlogs = [...blogs].sort(
+    (blogA, blogB) => blogB.likes - blogA.likes,
+  )
 
   useEffect(() => {
     getAllBlogs().then(setBlogs)
@@ -102,7 +105,7 @@ function App() {
         <h2>Create new</h2>
         <BlogForm onSubmit={handleAddBlog} />
       </Togglable>
-      {blogs.map((blog) => (
+      {sortedBlogs.map((blog) => (
         <Blog key={blog.id} blog={blog} onUpdate={handleUpdateBlog} />
       ))}
     </>
