@@ -39,7 +39,7 @@ export function Blog({ blog, canDelete, onUpdate, onDelete }) {
         <div>
           <div>{blog.url}</div>
           <div>
-            likes {blog.likes}{' '}
+            <span data-testid="blog-likes">{`likes ${blog.likes}`}</span>{' '}
             <button type="button" onClick={handleLike}>
               like
             </button>
@@ -58,6 +58,6 @@ export function Blog({ blog, canDelete, onUpdate, onDelete }) {
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
   canDelete: PropTypes.bool.isRequired,
-  onUpdate: PropTypes.fund.isRequired,
-  onDelete: PropTypes.fund.isRequired,
+  onUpdate: PropTypes.func.isRequired,
+  onDelete: PropTypes.func.isRequired,
 }
